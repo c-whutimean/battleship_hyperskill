@@ -6,8 +6,10 @@ public class Main {
     static List<Integer[][]> shipPlacement = new ArrayList<>();
     static List<List<Integer[][]>> allShips = new ArrayList<List<Integer[][]>>();
     static List<Coordinates> foggyList = new ArrayList<>();
+    static List<Coordinates> copyList = new ArrayList<>();
     static int hits = 0;
     static int sank = 0;
+    static int hitting = 0;
 
     public static void sortCoordinates(List<Coordinates> coordinatesList) {
         Collections.sort(coordinatesList, Comparator.comparingInt(Coordinates::getX)
@@ -15,20 +17,57 @@ public class Main {
     }
 
     static boolean checkSank() {
-        List<Integer> coordinatesToRemove = new ArrayList<>();
         List<ShipTypes.Ships> shipEnum = new ArrayList<>(EnumSet.allOf(ShipTypes.Ships.class));
         List<ShipTypes.Ships> shipList = new ArrayList<>();
         Collections.addAll(shipList, ShipTypes.Ships.values());
         sortCoordinates(foggyList);
-        int hitting;
+        boolean same = true;
 
-        for (Coordinates f : foggyList) {
-            if (shipList.contains(f)) {
+        for (ShipTypes.Ships ships : ShipTypes.Ships.values()) {
+            if (hits >= ships.getShipSize()) {
+                List<Coordinates> positions = ships.getPositions();
 
+             /*   System.out.println("in here");
+                for (Coordinates f : foggyList) {
+                    System.out.println("foggy list: " + f.getX() + " " + f.getY());
+                }
+                System.out.println();
+                for (Coordinates p : positions) {
+                    System.out.println("positions: " + p.getX() + " " + p.getY());
+                }*/
+
+              /*  for (int i = 0; i < foggyList.size(); i++) {
+                    System.out.println(foggyList.get(i));
+                }*/
+
+                for (int i = 0; i < positions.size(); i++) {
+                    if (positions.get(i).equals(foggyList.get(i))) {
+                        hitting++;
+                        if (hitting == ships.getShipSize()) {
+                            //System.out.println("i = " + i);
+                            for (int j = hitting; j < foggyList.size(); j++) {
+                                copyList.add(foggyList.get(j));
+                            }
+                            foggyList.clear();
+                            foggyList.addAll(copyList);
+                            copyList.clear();
+                            hits -= ships.getShipSize();
+                            hitting -= ships.getShipSize();
+                 /*           System.out.println("hitting = " + hitting);
+                            System.out.println("hits: " + hits);*/
+                            sank++;
+                            return true;
+                        }
+                    }
+                }
             }
-        }
+           /* System.out.println(same);
+            if (same) {
+                return true; // Ships match
+            }*/
 
-        return false;
+        }
+        return false; // No matching ships found
     }
 
 
@@ -62,19 +101,18 @@ public class Main {
                 if (Field.field[row][num].equals("O")) {
                     Field.foggyField[row][num] = "X";
                     Coordinates coord = new Coordinates(row, num);
-                    foggyList.add(coord);
-                    //hits++;
+                    if (!foggyList.contains(coord)) {
+                        foggyList.add(coord);
+                        hits++;
+                    }
                     Coordinates.getCoord();
                     boolean valid = checkSank();    //hits
                     if (valid) {
-                        //hits = 0;
                         if (sank == 5) {
                             Field.printFoggyField();
                             System.out.println("You sank the last ship. You won. Congratulations!");
                             break;
                         } else {
-                            sank++;
-                            foggyList.clear();
                             Field.printFoggyField();
                             System.out.println("\nYou sank a ship! Specify a new target:");
                         }
