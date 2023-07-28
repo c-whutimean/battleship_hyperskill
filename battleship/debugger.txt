@@ -1,0 +1,39 @@
+    line 94
+     for (ShipTypes.Ships ships : ShipTypes.Ships.values()) {
+                        System.out.println(ships.getShipName());
+                        List<Coordinates> positions = ships.getPositions();
+                        for (Coordinates p : positions) {
+                            System.out.println(p.getX() + " " + p.getY());
+                        }
+                        System.out.println();
+                    }
+
+     if (ships.getShipSize() == hits) {
+                     System.out.println("in here");
+                     for (Coordinates f : foggyList) {
+                         System.out.println(f.getX() + " " + f.getY());
+                     }
+                     System.out.println();
+                     for (Coordinates p : positions) {
+                         System.out.println(p.getX() + " " + p.getY());
+                     }
+                     boolean same = true;
+                     for (int i = 0; i < positions.size(); i++) {
+                         if (!positions.get(i).equals(foggyList.get(i))) {
+                             same = false;
+                             break;
+                         }
+                     }
+                     System.out.println(same);
+                     return positions.equals(foggyList);
+                 }
+
+                 line 34
+                  System.out.println("in here");
+                                 for (Coordinates f : foggyList) {
+                                     System.out.println(f.getX() + " " + f.getY());
+                                 }
+                                 System.out.println();
+                                 for (Coordinates p : positions) {
+                                     System.out.println(p.getX() + " " + p.getY());
+                                 }
