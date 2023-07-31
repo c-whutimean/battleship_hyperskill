@@ -17,28 +17,11 @@ public class Main {
     }
 
     static boolean checkSank() {
-        List<ShipTypes.Ships> shipEnum = new ArrayList<>(EnumSet.allOf(ShipTypes.Ships.class));
-        List<ShipTypes.Ships> shipList = new ArrayList<>();
-        Collections.addAll(shipList, ShipTypes.Ships.values());
         sortCoordinates(foggyList);
-        boolean same = true;
 
         for (ShipTypes.Ships ships : ShipTypes.Ships.values()) {
             if (hits >= ships.getShipSize()) {
                 List<Coordinates> positions = ships.getPositions();
-
-             /*   System.out.println("in here");
-                for (Coordinates f : foggyList) {
-                    System.out.println("foggy list: " + f.getX() + " " + f.getY());
-                }
-                System.out.println();
-                for (Coordinates p : positions) {
-                    System.out.println("positions: " + p.getX() + " " + p.getY());
-                }*/
-
-              /*  for (int i = 0; i < foggyList.size(); i++) {
-                    System.out.println(foggyList.get(i));
-                }*/
 
                 for (int i = 0; i < positions.size(); i++) {
                     if (positions.get(i).equals(foggyList.get(i))) {
@@ -53,19 +36,12 @@ public class Main {
                             copyList.clear();
                             hits -= ships.getShipSize();
                             hitting -= ships.getShipSize();
-                 /*           System.out.println("hitting = " + hitting);
-                            System.out.println("hits: " + hits);*/
                             sank++;
                             return true;
                         }
                     }
                 }
             }
-           /* System.out.println(same);
-            if (same) {
-                return true; // Ships match
-            }*/
-
         }
         return false; // No matching ships found
     }
@@ -83,6 +59,8 @@ public class Main {
         System.out.println("The game starts!\n");
         Field.printFoggyField();
         System.out.println("Take a shot!");
+
+        int shot = 0;
 
         while (true) {
             String input = sc.nextLine().toUpperCase().trim();
@@ -103,7 +81,12 @@ public class Main {
                     Coordinates coord = new Coordinates(row, num);
                     if (!foggyList.contains(coord)) {
                         foggyList.add(coord);
-                        hits++;
+                        shot++;
+                        if (shot == 17) {
+                            Field.printFoggyField();
+                            System.out.println("You sank the last ship. You won. Congratulations!");
+                            break;
+                        }
                     }
                     Coordinates.getCoord();
                     boolean valid = checkSank();    //hits
